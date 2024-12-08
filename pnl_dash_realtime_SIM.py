@@ -43,8 +43,6 @@ selected_strategies = st.sidebar.multiselect(
 # Handle "Select All" logic
 if "Select All" in selected_strategies:
     selected_strategies = all_strategies  
-    
-selected_strategies = st.sidebar.multiselect("Select strategies", df['StrategyName'].unique())
 
 # Convert 'ExitTime' column to datetime
 df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.date
