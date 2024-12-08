@@ -28,6 +28,22 @@ df = download_from_dropbox_IO("/Realtime_Log_SIM.csv", ACCESS_TOKEN)
 # Sidebar - Date range selection and strategy selection
 start_date = st.sidebar.date_input("Start date")
 end_date = st.sidebar.date_input("End date")
+
+# Sidebar with "Select All" option
+all_strategies = df['StrategyName'].unique().tolist()
+all_strategies_option = ["Select All"] + all_strategies  # Add "Select All" option
+
+# Multiselect widget
+selected_strategies = st.sidebar.multiselect(
+    "Select strategies",
+    all_strategies_option,
+    default=None
+)
+
+# Handle "Select All" logic
+if "Select All" in selected_strategies:
+    selected_strategies = all_strategies  
+    
 selected_strategies = st.sidebar.multiselect("Select strategies", df['StrategyName'].unique())
 
 # Convert 'ExitTime' column to datetime
