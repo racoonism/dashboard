@@ -37,7 +37,7 @@ all_strategies_option = ["Select All"] + all_strategies  # Add "Select All" opti
 selected_strategies = st.sidebar.multiselect(
     "Select strategies",
     all_strategies_option,
-    default=None
+    default="Select All"
 )
 
 # Handle "Select All" logic
