@@ -27,7 +27,7 @@ df = download_from_dropbox_IO("/Realtime_Log_DEMO.csv", ACCESS_TOKEN)
 # Sidebar - Date range selection and strategy selection
 start_date = st.sidebar.date_input("Start date")
 end_date = st.sidebar.date_input("End date")
-selected_strategies = st.sidebar.multiselect("Select strategies TEST", df['StrategyName'].unique())
+selected_strategies = st.sidebar.multiselect("Select strategies", df['StrategyName'].unique())
 
 # Convert 'ExitTime' column to datetime
 df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.normalize()
