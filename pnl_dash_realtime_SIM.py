@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+from datetime import datetime, date
+
 # from azure_download import *
 # fetch_file("Realtime_Log_SIM.csv")
 
@@ -24,9 +26,12 @@ def load_data():
 ### READ CONTENT DIRECTLY WITHOUT DOWNLOAD
 df = download_from_dropbox_IO("/Realtime_Log_SIM.csv", ACCESS_TOKEN)
 
+# Calculate the first day of the current month
+today = date.today()
+first_day_of_month = today.replace(day=1)
 
 # Sidebar - Date range selection and strategy selection
-start_date = st.sidebar.date_input("Start date")
+start_date = st.sidebar.date_input("Start date", value=first_day_of_month)
 end_date = st.sidebar.date_input("End date")
 
 # Sidebar with "Select All" option
