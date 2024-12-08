@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+from datetime import datetime, date
 
 # from azure_download import *
 # fetch_file("Realtime_Log_DEMO.csv")
@@ -24,10 +25,29 @@ def load_data():
 ### READ CONTENT DIRECTLY WITHOUT DOWNLOAD
 df = download_from_dropbox_IO("/Realtime_Log_DEMO.csv", ACCESS_TOKEN)
 
+# Calculate the first day of the current month
+today = date.today()
+first_day_of_month = today.replace(day=1)
+
 # Sidebar - Date range selection and strategy selection
-start_date = st.sidebar.date_input("Start date")
+start_date = st.sidebar.date_input("Start date", value=first_day_of_month)
 end_date = st.sidebar.date_input("End date")
-selected_strategies = st.sidebar.multiselect("Select strategies", df['StrategyName'].unique())
+
+# Sidebar with "Select All" option
+all_strategies = df['StrategyName'].unique().tolist()
+all_strategies_option = ["Select All"] + all_strategies  # Add "Select All" option
+
+# Multiselect widget
+selected_strategies = st.sidebar.multiselect(
+    "Select strategies",
+    all_strategies_option,
+    default="Select All"
+)
+
+# Handle "Select All" logic
+if "Select All" in selected_strategies:
+    selected_strategies = all_strategies  
+
 
 # Convert 'ExitTime' column to datetime
 df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.normalize()
