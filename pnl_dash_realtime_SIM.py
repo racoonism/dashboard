@@ -48,6 +48,7 @@ combined_cumulative_profit['StrategyName'] = 'All Strategies'
 # Append combined cumulative profit to daily profit dataframe
 daily_profit = pd.concat([grouped_df, combined_cumulative_profit], ignore_index=True)
 
+### STRATCOMBO START
 # Add new feature: Top strategy combinations
 st.sidebar.header("Top 3 strategy combinations")
 number_of_strats = st.sidebar.slider("Number of strategies to combine", min_value=1, max_value=10, value=4)
@@ -71,14 +72,14 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
         # Display the results
         for day_type, top_combinations in results.items():
             day_type_label = "All" if day_type is None else day_type
-            st.write(f"### Top 3 strategy combinations: {day_type_label}")
+            st.write(f"### Top 3 strategy combinations:") #{day_type_label}")
             for rank, (combination, profit) in enumerate(top_combinations, start=1):
                 st.markdown(f"**{rank} - Profit: {round(profit,)}:**  \n{list(combination)}")
                 # st.write(f"**{rank} - Profit: {profit}:**\n: {list(combination)}")
 
     except Exception as e:
         st.error(f"Error during analysis: {e}")
-
+### STRATCOMBO END
 
 # Plot cumulative profit for each strategy and all strategies combined
 chart = alt.Chart(daily_profit).mark_line().encode(
