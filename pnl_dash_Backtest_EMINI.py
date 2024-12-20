@@ -36,62 +36,6 @@ start_date = today - timedelta(days=365)
 start_date = st.sidebar.date_input("Start date", start_date)
 end_date = st.sidebar.date_input("End date")
 
-# selected_strategies = st.sidebar.multiselect("Select strategies", df['StrategyName'].unique())
-selected_strategies = st.multiselect('Select a portfolio of strategies to calculate net profit', df_original['StrategyName'].unique())
-exclude_econ_events = st.sidebar.checkbox("Exclude economic events")
-
-# Convert 'ExitTime' column to datetime
-df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.normalize()
-print(df.head())
-
-# Exclude economic events
-economic_events = download_from_dropbox_IO("/US_events_high.csv", ACCESS_TOKEN)
-economic_events = economic_events["date"]
-# print(economic_events)
-
-# Convert economic_events to datetime objects
-economic_events = pd.to_datetime(economic_events, format="%d/%m/%Y")
-# print(economic_events)
-
-if exclude_econ_events:
-    # Filter out rows where 'ExitTime' matches any of the economic_events
-    filtered_df = df.loc[~df['ExitTime'].isin(economic_events.dt.date)]
-    print("filtered 1")
-    print(filtered_df)
-else:
-    filtered_df = df
-
-
-#  Multi-select date picker widget for selecting dates to exclude
-excluded_dates = st.sidebar.multiselect('Select dates to exclude', pd.date_range(start='2008-01-01', end='2025-12-31').date)
-filtered_df = filtered_df.loc[~filtered_df['ExitTime'].isin(excluded_dates)]
-
-# Filter data
-filtered_df = filtered_df[filtered_df['StrategyName'].isin(selected_strategies)]
-
-filtered_df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.date
-# print(start_date)
-filtered_df = filtered_df[(filtered_df['ExitTime'] >= start_date) & (filtered_df['ExitTime'] <= end_date)]
-# print(filtered_df)
-
-# Group by date and StrategyName and calculate sum of profit
-grouped_df = filtered_df.groupby(['ExitTime', 'StrategyName']).agg({'Profit': 'sum'}).reset_index()
-
-# Calculate cumulative profit for each day and each strategy
-grouped_df['CumulativeProfit'] = grouped_df.groupby('StrategyName')['Profit'].cumsum()
-print(grouped_df)
-print(filtered_df)
-
-# Calculate combined cumulative profit
-combined_cumulative_profit = filtered_df.groupby('ExitTime')['Profit'].sum().reset_index()
-combined_cumulative_profit['CumulativeProfit'] = combined_cumulative_profit['Profit'].cumsum()
-combined_cumulative_profit['StrategyName'] = 'All Strategies'
-print(combined_cumulative_profit)
-
-# Append combined cumulative profit to daily profit dataframe
-daily_profit = pd.concat([grouped_df, combined_cumulative_profit], ignore_index=True)
-print(daily_profit)
-
 ### STRATCOMBO START
 # Add new feature: Top strategy combinations
 st.sidebar.header("Top 3 strategy combinations")
@@ -125,6 +69,65 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
         st.error(f"Error during analysis: {e}")
 ### STRATCOMBO END
 
+# selected_strategies = st.sidebar.multiselect("Select strategies", df['StrategyName'].unique())
+selected_strategies = st.multiselect('##### Select a portfolio of strategies to calculate net profit', df_original['StrategyName'].unique())
+exclude_econ_events = st.sidebar.checkbox("Exclude economic events")
+
+# Convert 'ExitTime' column to datetime
+df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.normalize()
+print(df.head())
+
+# Exclude economic events
+economic_events = download_from_dropbox_IO("/US_events_high.csv", ACCESS_TOKEN)
+economic_events = economic_events["date"]
+# print(economic_events)
+
+# Convert economic_events to datetime objects
+economic_events = pd.to_datetime(economic_events, format="%d/%m/%Y")
+# print(economic_events)
+
+if exclude_econ_events:
+    # Filter out rows where 'ExitTime' matches any of the economic_events
+    filtered_df = df.loc[~df['ExitTime'].isin(economic_events.dt.date)]
+    print("filtered 1")
+    print(filtered_df)
+else:
+    filtered_df = df
+
+
+
+#  Multi-select date picker widget for selecting dates to exclude
+excluded_dates = st.sidebar.multiselect('Select dates to exclude', pd.date_range(start='2008-01-01', end='2025-12-31').date)
+filtered_df = filtered_df.loc[~filtered_df['ExitTime'].isin(excluded_dates)]
+
+# Filter data
+filtered_df = filtered_df[filtered_df['StrategyName'].isin(selected_strategies)]
+
+filtered_df['ExitTime'] = pd.to_datetime(df['ExitTime']).dt.date
+# print(start_date)
+filtered_df = filtered_df[(filtered_df['ExitTime'] >= start_date) & (filtered_df['ExitTime'] <= end_date)]
+# print(filtered_df)
+
+# Group by date and StrategyName and calculate sum of profit
+grouped_df = filtered_df.groupby(['ExitTime', 'StrategyName']).agg({'Profit': 'sum'}).reset_index()
+
+# Calculate cumulative profit for each day and each strategy
+grouped_df['CumulativeProfit'] = grouped_df.groupby('StrategyName')['Profit'].cumsum()
+print(grouped_df)
+print(filtered_df)
+
+# Calculate combined cumulative profit
+combined_cumulative_profit = filtered_df.groupby('ExitTime')['Profit'].sum().reset_index()
+combined_cumulative_profit['CumulativeProfit'] = combined_cumulative_profit['Profit'].cumsum()
+combined_cumulative_profit['StrategyName'] = 'All Strategies'
+print(combined_cumulative_profit)
+
+# Append combined cumulative profit to daily profit dataframe
+daily_profit = pd.concat([grouped_df, combined_cumulative_profit], ignore_index=True)
+print(daily_profit)
+
+
+
 # Plot cumulative profit for each strategy and all strategies combined
 st.write("")
 st.write("Cumulative profit of selected strategies:")
@@ -144,8 +147,8 @@ st.altair_chart(chart, use_container_width=True)
 selected_strategies = st.multiselect('Select a portfolio of strategies to calculate required capital', df_original['StrategyName'].unique())
 
 # Call the required_capital function with selected strategies
-required_capital('AllTrades_Log', start_date, end_date, selected_strategies)
-correlation('AllTrades_Log', start_date, end_date, selected_strategies)
+required_capital('AllTrades_Log_EMINI.csv', start_date, end_date, selected_strategies)
+correlation('AllTrades_Log_EMINI.csv', start_date, end_date, selected_strategies)
 
 # Display the generated plot
 st.image('RequiredCapital.png', caption='Combined Profit Data Series')
