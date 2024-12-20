@@ -73,7 +73,7 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
             day_type_label = "All" if day_type is None else day_type
             st.write(f"### Top 3 strategy combinations: {day_type_label}")
             for rank, (combination, profit) in enumerate(top_combinations, start=1):
-                st.markdown(f"**{rank} - Profit: {profit}:**  \n{list(combination)}")
+                st.markdown(f"**{rank} - Profit: {round(profit,)}:**  \n{list(combination)}")
                 # st.write(f"**{rank} - Profit: {profit}:**\n: {list(combination)}")
 
     except Exception as e:
