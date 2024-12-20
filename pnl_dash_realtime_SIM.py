@@ -48,26 +48,6 @@ combined_cumulative_profit['StrategyName'] = 'All Strategies'
 # Append combined cumulative profit to daily profit dataframe
 daily_profit = pd.concat([grouped_df, combined_cumulative_profit], ignore_index=True)
 
-# Plot cumulative profit for each strategy and all strategies combined
-chart = alt.Chart(daily_profit).mark_line().encode(
-    x='ExitTime:T',
-    y='CumulativeProfit:Q',
-    color='StrategyName:N',
-    tooltip=['StrategyName', 'ExitTime', 'CumulativeProfit']
-).properties(
-    width=800,
-    height=400
-).interactive()
-
-st.altair_chart(chart, use_container_width=True)
-
-# Display the dataframes in the Streamlit app
-st.write("Combined Cumulative Profit:")
-st.dataframe(combined_cumulative_profit)
-
-st.write("Daily Profit and Loss Data:")
-st.dataframe(daily_profit)
-
 # Add new feature: Top strategy combinations
 st.sidebar.header("Top 3 strategy combinations")
 number_of_strats = st.sidebar.slider("Number of strategies to combine", min_value=1, max_value=10, value=4)
@@ -97,6 +77,28 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
 
     except Exception as e:
         st.error(f"Error during analysis: {e}")
+
+
+# Plot cumulative profit for each strategy and all strategies combined
+chart = alt.Chart(daily_profit).mark_line().encode(
+    x='ExitTime:T',
+    y='CumulativeProfit:Q',
+    color='StrategyName:N',
+    tooltip=['StrategyName', 'ExitTime', 'CumulativeProfit']
+).properties(
+    width=800,
+    height=400
+).interactive()
+
+st.altair_chart(chart, use_container_width=True)
+
+# Display the dataframes in the Streamlit app
+st.write("Combined Cumulative Profit:")
+st.dataframe(combined_cumulative_profit)
+
+st.write("Daily Profit and Loss Data:")
+st.dataframe(daily_profit)
+
 
 # Display the loaded data
 st.write("Loaded Data:")
