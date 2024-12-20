@@ -82,6 +82,8 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
 ### STRATCOMBO END
 
 # Plot cumulative profit for each strategy and all strategies combined
+st.write("")
+st.write("Cumulative profit of selected strategies:")
 chart = alt.Chart(daily_profit).mark_line().encode(
     x='ExitTime:T',
     y='CumulativeProfit:Q',
