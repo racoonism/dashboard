@@ -116,7 +116,7 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
         # Display the results
         for day_type, top_combinations in results.items():
             day_type_label = "All" if day_type is None else day_type
-            st.write(f"### Top 3 strategy combinations:") #{day_type_label}")
+            st.write(f"##### Top 3 strategy combinations:") #{day_type_label}")
             for rank, (combination, profit) in enumerate(top_combinations, start=1):
                 st.markdown(f"**{rank} - Profit: {round(profit,)}:**  \n{list(combination)}")
                 # st.write(f"**{rank} - Profit: {profit}:**\n: {list(combination)}")
@@ -126,6 +126,8 @@ if st.sidebar.button("### Find Top 3 strategy combinations"):
 ### STRATCOMBO END
 
 # Plot cumulative profit for each strategy and all strategies combined
+st.write("")
+st.write("Cumulative profit of selected strategies:")
 chart = alt.Chart(daily_profit).mark_line().encode(
     x='ExitTime:T',
     y='CumulativeProfit:Q',
